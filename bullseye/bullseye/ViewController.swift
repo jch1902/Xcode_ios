@@ -14,16 +14,28 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var slider: UISlider!
     
+    @IBOutlet weak var targetLabel: UILabel!
+    
+    @IBOutlet weak var scoreLabel: UILabel!
+    
+    @IBOutlet weak var roundLabel: UILabel!
+    
+    @IBOutlet weak var infoLabel: UILabel!
+    
+    var score = 0
     var targetValue: Int=0
+    var round = 1
+    
     
     //you can use the above variables for anything throughout the whole script since it is under class but not under anything else
     
     override func viewDidLoad() {
         
         super.viewDidLoad()
-        
         currentValue = lroundf(slider.value)
-        
+        targetValue = 1 + Int(arc4random_uniform(100))
+        roundLabel.text = "1"
+        updateLabels()
         // Do any additional setup after loading the view, typically from a nib.
     }
 
@@ -35,31 +47,78 @@ class ViewController: UIViewController {
     }
     
     func startNewRound() {
+        round += 1
         targetValue = 1 + Int(arc4random_uniform(100))
         currentValue = 50
         slider.value = Float(currentValue)
+        updateLabels()
     }
     
-    @IBAction func sliderMoved(_ slider: UISlider){
-        
-        currentValue = lroundf(slider.value)
-        
+    @IBAction func startOver(){
+        score = 0
+        round = 1
         targetValue = 1 + Int(arc4random_uniform(100))
+        currentValue = 50
+        updateLabels()
+    }
+    
+    func updateLabels(){
+        targetLabel.text = String(targetValue)
+        scoreLabel.text =  String(score)
+        roundLabel.text = String(round)
+        
+    }
+    @IBAction func sliderMoved(_ slider: UISlider){
+        currentValue = lroundf(slider.value)
     }
     
     @IBAction func showAlert() {
         
-        let message = "The value of the slider is: \(currentValue)" + "\nThe target value is: \(targetValue)"
         
-        let alert = UIAlertController(title: "Hello, World!", message: message, preferredStyle: .alert)
+        let difference: Int = abs(targetValue - currentValue)
         
-        let action = UIAlertAction(title: "Awesome", style: .default, handler: nil)	
+        let feed: String
+        
+        let answ: String
+        
+        var points = 100 - difference
+        
+        if difference == 0 {
+            feed = "Perfect!"
+            answ = "Awesome!"
+            points += 100
+        }else if difference < 5{
+            feed = "Pretty close!"
+            answ = "Great!"
+            points += 50
+        }else if  difference < 10 {
+            feed = "Not bad.."
+            answ = "Okay!"
+            points += 25
+        }else {
+            feed = "Not even close.."
+            answ = "Next time I guess.."
+        }
+        
+        score += points
+        
+        let message = "You scored \(points)"
+        
+        let alert = UIAlertController(title: feed , message: message, preferredStyle: .alert)
+        
+        let action = UIAlertAction(title: answ , style: .default, handler: {
+                action in
+                    self.startNewRound()
+        })
         
         alert.addAction(action)
         
         present(alert, animated: true, completion: nil)
         
-        startNewRound()
+    }
+    
+    @IBAction func popInfo() {
+      
     }
 }
 
