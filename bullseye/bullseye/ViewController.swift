@@ -20,8 +20,6 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var roundLabel: UILabel!
     
-    @IBOutlet weak var infoLabel: UILabel!
-    
     var score = 0
     var targetValue: Int=0
     var round = 1
@@ -36,6 +34,20 @@ class ViewController: UIViewController {
         targetValue = 1 + Int(arc4random_uniform(100))
         roundLabel.text = "1"
         updateLabels()
+        
+        let thumbImageNormal = UIImage(named: "SliderThumb-Normal")
+        slider.setThumbImage(thumbImageNormal, for: .normal)
+        
+        let insets = UIEdgeInsets(top: 0, left: 14, bottom: 0, right: 14)
+        
+        let trackLeftImage = UIImage(named: "SliderTrackLeft")
+        let trackLeftResizable = trackLeftImage?.resizableImage(withCapInsets: insets)
+        slider.setMinimumTrackImage(trackLeftResizable, for: .normal)
+        
+        let trackRightImage = UIImage(named: "SliderTrackRight")
+        let trackRightResizable = trackRightImage?.resizableImage(withCapInsets: insets)
+        slider.setMaximumTrackImage(trackRightResizable, for: .normal)
+        
         // Do any additional setup after loading the view, typically from a nib.
     }
 
@@ -69,8 +81,11 @@ class ViewController: UIViewController {
         
     }
     @IBAction func sliderMoved(_ slider: UISlider){
+        let thumbImageHighlighted = UIImage(named: "SliderThumb-Highlighted")
+        slider.setThumbImage(thumbImageHighlighted, for: .highlighted)
         currentValue = lroundf(slider.value)
     }
+  
     
     @IBAction func showAlert() {
         
@@ -114,11 +129,6 @@ class ViewController: UIViewController {
         alert.addAction(action)
         
         present(alert, animated: true, completion: nil)
-        
-    }
-    
-    @IBAction func popInfo() {
-      
     }
 }
 
